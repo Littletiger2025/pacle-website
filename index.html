@@ -58,6 +58,7 @@
                 try {
                     const response = await fetch(url, options);
                     if (!response.ok) {
+                        // 抛出带有状态码的错误
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return response;
@@ -70,10 +71,52 @@
             }
             throw new Error("Failed to fetch data after multiple retries.");
         }
+        
+        // --- 本地备用新闻数据 (Mock Data) ---
+        const MOCK_NEWS_DATA = [
+            { id: 101, title: "年度教师大会圆满落幕", date: "2024-11-20", summary: "数百位中文教师齐聚一堂，分享教学经验，提升专业能力。" },
+            { id: 102, title: "文化交流项目启动招募", date: "2024-11-15", summary: "旨在促进跨文化理解，欢迎对中华文化感兴趣的学生报名。" },
+            { id: 103, title: "理事会召开秋季会议", date: "2024-11-10", summary: "讨论了新学年预算及未来五年中文教育发展规划。" },
+            { id: 104, title: "沉浸式中文夏令营预告", date: "2024-11-05", summary: "为青少年设计，结合语言学习和传统艺术体验，名额有限。" },
+            { id: 105, title: "线上教学资源库升级", date: "2024-10-30", summary: "新增上百份高质量教材和教案，支持全州中文学校使用。" }
+        ];
 
         // --- 应用程序状态和数据 ---
         let allNews = [];
         let currentView = 'list'; // 'list' 或 'detail'
+
+        // --- 核心功能：生成新闻列表 HTML 片段 ---
+        function generateNewsListHtml(news) {
+            if (news.length === 0) {
+                return '<p class="text-gray-500 text-center">暂无新闻。</p>';
+            }
+
+            return news.map(item => `
+                <a href="#" onclick="showNewsDetail(${item.id}); return false;" 
+                   class="news-item-link block p-6 border border-gray-200 rounded-xl bg-white shadow-sm transition duration-300 hover:shadow-md hover:border-teal-500">
+                    <div class="flex items-start mb-2">
+                        <i data-lucide="newspaper" class="w-6 h-6 text-teal-600 mr-3 mt-1"></i>
+                        <h3 class="text-xl font-semibold text-gray-900 leading-tight">${item.title}</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-3 ml-9">${item.date}</p>
+                    <p class="text-gray-700 ml-9">${item.summary}</p>
+                </a>
+            `).join('');
+        }
+
+        // --- 渲染新闻列表 ---
+        function renderNewsList(news) {
+            const container = document.getElementById('news-list-container');
+            const newsHtml = generateNewsListHtml(news);
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    ${newsHtml}
+                </div>
+            `;
+            // 重新渲染 Lucide 图标
+            lucide.createIcons();
+        }
 
         // --- 核心功能：获取新闻列表 ---
         async function fetchNewsList() {
@@ -118,7 +161,6 @@
                 const candidate = result.candidates?.[0];
 
                 if (!candidate || !candidate.content?.parts?.[0]?.text) {
-                    // 更严格地检查返回内容
                     throw new Error("API did not return valid content in the expected structure.");
                 }
 
@@ -131,45 +173,33 @@
             } catch (error) {
                 // 确保任何错误都会被捕获并显示在UI上
                 console.error("获取新闻列表失败:", error);
-                container.innerHTML = `<div class="p-4 border-l-4 border-red-500 bg-red-100 rounded-lg text-red-700">
-                    <p class="font-bold">加载错误</p>
-                    <p>无法加载新闻列表。请检查网络连接或稍后重试。详细错误: ${error.message}</p>
+                
+                let errorMessage = `无法加载新闻列表。详细错误: ${error.message}`;
+                if (error.message.includes('403')) {
+                    errorMessage = `无法通过 API 加载新闻（错误码 403，访问被拒绝）。已切换到本地备用数据。`;
+                }
+
+                // --- 故障转移：使用本地 MOCK 数据渲染列表 ---
+                allNews = MOCK_NEWS_DATA;
+
+                // 1. 构建错误警告 HTML
+                const errorHtml = `<div class="mb-4 p-4 border-l-4 border-red-500 bg-red-100 rounded-lg text-red-700">
+                    <p class="font-bold">加载警告：API 访问受限</p>
+                    <p>${errorMessage}</p>
                 </div>`;
+                
+                // 2. 获取列表 HTML
+                const listHtml = generateNewsListHtml(allNews);
+
+                // 3. 组合并渲染
+                container.innerHTML = errorHtml + `<div class="grid grid-cols-1 md:grid-cols-2 gap-8">${listHtml}</div>`;
+                
+                lucide.createIcons(); // 重新渲染 Lucide 图标
+                
             } finally {
                 loadingIndicator.classList.add('hidden');
             }
         }
-
-        // --- 渲染新闻列表 ---
-        function renderNewsList(news) {
-            const container = document.getElementById('news-list-container');
-            if (news.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center">暂无新闻。</p>';
-                return;
-            }
-
-            // 使用 Grid 布局，在小屏幕上是单列，在中等屏幕上是双列
-            const newsHtml = news.map(item => `
-                <a href="#" onclick="showNewsDetail(${item.id}); return false;" 
-                   class="news-item-link block p-6 border border-gray-200 rounded-xl bg-white shadow-sm transition duration-300 hover:shadow-md hover:border-teal-500">
-                    <div class="flex items-start mb-2">
-                        <i data-lucide="newspaper" class="w-6 h-6 text-teal-600 mr-3 mt-1"></i>
-                        <h3 class="text-xl font-semibold text-gray-900 leading-tight">${item.title}</h3>
-                    </div>
-                    <p class="text-sm text-gray-500 mb-3 ml-9">${item.date}</p>
-                    <p class="text-gray-700 ml-9">${item.summary}</p>
-                </a>
-            `).join('');
-
-            container.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    ${newsHtml}
-                </div>
-            `;
-            // 重新渲染 Lucide 图标
-            lucide.createIcons();
-        }
-
 
         // --- 核心功能：获取新闻详情 ---
         async function fetchNewsDetail(id) {
@@ -214,7 +244,15 @@
                 return content;
             } catch (error) {
                 console.error("获取新闻详情失败:", error);
-                return `<p class="text-red-600 p-4 bg-red-100 rounded-lg">抱歉，无法加载新闻详情。错误信息: ${error.message}</p>`;
+                
+                let fallbackContent = `
+                    <p><strong>[内容生成失败警告]</strong> 抱歉，由于 API 访问受限（错误：${error.message}），此新闻的详细内容未能实时生成。以下为替代的占位内容，用于演示网站排版：</p>
+                    <p>“${newsItem.title}”于 ${newsItem.date} 顺利举行。活动取得了圆满成功，充分体现了宾州中文教育联盟致力于推广高质量中文教育的决心。本次活动的亮点包括教师们积极分享创新教学方法，以及参会者对未来中文教育发展趋势的热烈讨论。</p>
+                    <p>我们衷心感谢所有参与者的热情投入与支持。PACLE 将继续努力，为宾州的中文教育社区提供更多优质资源和交流平台。期待在下一届活动中与大家再次相聚！</p>
+                `;
+
+                return fallbackContent;
+
             } finally {
                 loadingIndicator.classList.add('hidden');
             }
@@ -276,87 +314,4 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <!-- 导航栏 (Header) -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-blue-900">
-                <i data-lucide="book-open-text" class="w-6 h-6 inline-block mr-2 text-teal-600"></i>
-                PACLE
-            </h1>
-            <nav class="hidden md:flex space-x-6 text-lg font-medium">
-                <a href="#" class="text-blue-700 hover:text-teal-600 transition duration-150">首页</a>
-                <a href="#about" class="text-gray-600 hover:text-teal-600 transition duration-150">关于我们</a>
-                <a href="#news" class="text-gray-600 hover:text-teal-600 transition duration-150">最新消息</a>
-                <a href="#events" class="text-gray-600 hover:text-teal-600 transition duration-150">年度大会</a>
-                <a href="#contact" class="text-gray-600 hover:text-teal-600 transition duration-150">联系我们</a>
-            </nav>
-            <button class="md:hidden text-blue-900 p-2 rounded-lg hover:bg-gray-100">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
-        </div>
-    </header>
-
-    <main class="py-12">
-
-        <!-- 新闻列表视图 -->
-        <section id="news-list-view" class="container mx-auto px-4 mb-20">
-            <h2 class="text-4xl font-extrabold text-center text-blue-900 mb-12 border-b-4 border-teal-500 inline-block mx-auto pb-2">最新消息</h2>
-            
-            <!-- 加载指示器 -->
-            <div id="news-loading" class="text-center p-8">
-                <svg class="animate-spin h-8 w-8 text-teal-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <p class="mt-3 text-teal-600">正在加载新闻...</p>
-            </div>
-
-            <!-- 新闻列表容器 -->
-            <div id="news-list-container" class="mt-8">
-                <!-- RENDERED NEWS LIST GOES HERE -->
-            </div>
-        </section>
-
-        <!-- 新闻详情视图 -->
-        <section id="news-detail-view" class="container mx-auto px-4 hidden">
-            <!-- 返回按钮 -->
-            <button onclick="showNewsList()" 
-                    class="flex items-center text-blue-600 hover:text-teal-600 transition duration-300 mb-6 font-medium">
-                <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i>
-                返回新闻列表
-            </button>
-            
-            <!-- 新闻详情容器：应用专业美化样式 -->
-            <div id="news-detail-container" class="bg-white p-6 lg:p-12 rounded-2xl shadow-2xl">
-                <!-- 加载指示器不再需要单独的 div，因为骨架图已经包含在内容中 -->
-                
-                <!-- 新闻详情内容区域 -->
-                <div id="news-detail-content">
-                    <!-- RENDERED NEWS DETAIL GOES HERE -->
-                </div>
-
-                <!-- 底部返回按钮 -->
-                <div class="mt-12 pt-6 border-t border-gray-100 text-center">
-                    <button onclick="showNewsList()" 
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                        <i data-lucide="arrow-left" class="w-5 h-5 inline-block mr-2"></i>
-                        返回新闻列表
-                    </button>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- 页脚 (Footer) -->
-    <footer class="bg-blue-900 text-white mt-12">
-        <div class="container mx-auto px-6 py-10 text-center">
-            <p>&copy; 2024 PACLE 宾州中文教育联盟. All Rights Reserved.</p>
-            <div class="flex justify-center space-x-4 mt-3">
-                <a href="#" class="text-gray-300 hover:text-teal-400">隐私政策</a>
-                <a href="#" class="text-gray-300 hover:text-teal-400">使用条款</a>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+    <!-- 导航栏 (Header
