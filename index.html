@@ -56,8 +56,10 @@
 
                 <!-- 桌面端菜单 (Desktop Menu) -->
                 <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#about" class="text-gray-600 hover:text-primary transition duration-150 font-medium">关于我们 / About Us</a>
                     <a href="#program" class="text-gray-600 hover:text-primary transition duration-150 font-medium">介绍项目 / Programs</a>
                     <a href="#news" class="text-gray-600 hover:text-primary transition duration-150 font-medium">发布新闻 / News</a>
+                    <a href="#contact" class="text-gray-600 hover:text-primary transition duration-150 font-medium">联系我们 / Contact Us</a>
                     <a href="#membership" class="px-5 py-2 rounded-full bg-secondary text-white font-medium hover:bg-red-700 transition duration-150 shadow-md">
                         会员注册 / Membership
                     </a>
@@ -75,8 +77,10 @@
         <!-- 移动端菜单内容 (Mobile Menu Content) -->
         <div id="mobile-menu" class="mobile-menu md:hidden bg-gray-50">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-primary hover:text-white">关于我们 / About Us</a>
                 <a href="#program" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-primary hover:text-white">介绍项目 / Programs</a>
                 <a href="#news" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-primary hover:text-white">发布新闻 / News</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-primary hover:text-white">联系我们 / Contact Us</a>
                 <a href="#membership" class="block w-full text-center px-3 py-2 mt-4 rounded-full bg-secondary text-white font-medium hover:bg-red-700 transition duration-150">会员注册 / Membership</a>
             </div>
         </div>
@@ -102,6 +106,45 @@
             </a>
         </div>
     </header>
+
+    <!-- 关于我们 (About Us Section) -->
+    <section id="about" class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- 左侧：文字内容 -->
+            <div class="lg:pr-8">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-primary border-b-4 border-secondary inline-block pb-1">关于我们 / About PACLE</h2>
+                <p class="text-lg text-gray-700 mb-6">
+                    PACLE (Pennsylvania Chinese Language Education) 成立于 2024 年，是宾夕法尼亚州首个致力于中文教育专业化发展的非营利组织。我们的使命是提升本州中文教师的专业素养，并促进高质量的中文课程普及。
+                </p>
+                
+                <h3 class="text-2xl font-semibold text-secondary mb-3">我们的愿景</h3>
+                <p class="text-gray-600 mb-6">
+                    建立一个充满活力的中文教育社区，让所有宾州学生都能获得一流的中文学习机会，成为未来的全球公民。
+                </p>
+
+                <div class="space-y-3">
+                    <div class="flex items-start">
+                        <i class="fas fa-check-circle text-secondary text-xl mt-1 mr-3 flex-shrink-0"></i>
+                        <p class="text-gray-700">提升中文教学质量和标准。</p>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-check-circle text-secondary text-xl mt-1 mr-3 flex-shrink-0"></i>
+                        <p class="text-gray-700">促进中美文化教育交流与合作。</p>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-check-circle text-secondary text-xl mt-1 mr-3 flex-shrink-0"></i>
+                        <p class="text-gray-700">为中文教师提供持续的专业发展支持。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：配图 -->
+            <div class="rounded-xl overflow-hidden shadow-2xl transform hover:scale-[1.01] transition duration-500">
+                <!-- Placeholder Image for 'About Us' section -->
+                <img src="https://placehold.co/800x600/1e3a8a/ffffff?text=PACLE+Community+Vision" alt="[Image of students and teachers communicating]" class="w-full h-auto object-cover">
+            </div>
+        </div>
+    </section>
 
     <!-- 介绍项目 (Programs Section) -->
     <section id="program" class="py-16 md:py-24 bg-white">
@@ -153,33 +196,36 @@
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- 新闻卡片 1 -->
+                <!-- 新闻卡片 1 - PACLE 启动与大会 (已更新链接) -->
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="https://placehold.co/600x400/1e3a8a/ffffff?text=Professional+Development" alt="[Image of Professional Development Workshop]" class="w-full h-48 object-cover">
+                    <img src="https://placehold.co/600x400/cc0000/ffffff?text=PACLE+Launch+Conference" alt="[Image of Conference Hall]" class="w-full h-48 object-cover">
                     <div class="p-6">
-                        <span class="text-xs font-semibold text-secondary uppercase tracking-wider">活动通知 / Event</span>
-                        <h3 class="text-xl font-bold text-primary my-2">宾州中文教育联盟（PACLE）正式启动：首届中文大会在圣约瑟夫大学隆重召开</h3>
-                        <p class="text-gray-600 text-sm mb-4">来自宾州各地的中文教师齐聚一堂，学习最新的沉浸式教学法。</p>
+                        <span class="text-xs font-semibold text-secondary uppercase tracking-wider">重磅新闻 / Major News</span>
+                        <h3 class="text-xl font-bold text-primary my-2">PACLE 正式启动：首届中文大会隆重召开</h3>
+                        <p class="text-gray-600 text-sm mb-4">2025年12月6日，PACLE 联盟在圣约瑟夫大学中文大会上宣布正式成立，开启宾州中文教育新篇章。</p>
+                        <!-- **** 关键更新在这里: 链接指向 pacle_launch_news.md **** -->
+                        <a href="pacle_launch_news.md" class="text-secondary hover:text-primary font-medium text-sm">阅读全文 <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                    </div>
+                </div>
+                
+                <!-- 新闻卡片 2 - 夏季计划 (Placeholder Updated) -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://placehold.co/600x400/1e3a8a/ffffff?text=Teacher+Summer+Workshop" alt="[Image of Professional Development Workshop]" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span class="text-xs font-semibold text-primary uppercase tracking-wider">活动通知 / Event</span>
+                        <h3 class="text-xl font-bold text-primary my-2">联盟宣布夏季教师专业发展计划</h3>
+                        <p class="text-gray-600 text-sm mb-4">PACLE 将于暑假期间举办系列工作坊，重点提升教师在数字化教学工具应用方面的能力。</p>
                         <a href="#" class="text-secondary hover:text-primary font-medium text-sm">阅读全文 <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
                     </div>
                 </div>
-                <!-- 新闻卡片 2 -->
+                
+                <!-- 新闻卡片 3 - 成功案例 (Placeholder Updated) -->
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="https://placehold.co/600x400/cc0000/ffffff?text=New+Partnership+Announced" alt="[Image of Contract Signing]" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <span class="text-xs font-semibold text-primary uppercase tracking-wider">联盟公告 / Announcement</span>
-                        <h3 class="text-xl font-bold text-primary my-2">PACLE 与 美国东方广播影视公司达成战略合作</h3>
-                        <p class="text-gray-600 text-sm mb-4">扩大中文课程资源，共同推动高中AP中文项目的普及。</p>
-                        <a href="#" class="text-secondary hover:text-primary font-medium text-sm">阅读全文 <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
-                    </div>
-                </div>
-                <!-- 新闻卡片 3 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="https://placehold.co/600x400/6b7280/ffffff?text=Student+Success" alt="[Image of Chinese School Students]" class="w-full h-48 object-cover">
+                    <img src="https://placehold.co/600x400/6b7280/ffffff?text=Student+Awards" alt="[Image of Chinese School Students]" class="w-full h-48 object-cover">
                     <div class="p-6">
                         <span class="text-xs font-semibold text-secondary uppercase tracking-wider">成功案例 / Success Story</span>
-                        <h3 class="text-xl font-bold text-primary my-2">春季教师专业发展计划</h3>
-                        <p class="text-gray-600 text-sm mb-4">PACLE教师技能提升系列工作坊即将开启。</p>
+                        <h3 class="text-xl font-bold text-primary my-2">宾州学生在“汉语桥”比赛中获佳绩</h3>
+                        <p class="text-gray-600 text-sm mb-4">宾州中文学校学生代表团在全国中文比赛中表现出色，充分展示了中文教育的最新成果。</p>
                         <a href="#" class="text-secondary hover:text-primary font-medium text-sm">阅读全文 <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
                     </div>
                 </div>
@@ -187,8 +233,77 @@
         </div>
     </section>
 
+    <!-- 联系我们 (Contact Us Section) -->
+    <section id="contact" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-primary">联系我们 / Contact Us</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+                无论您是中文教师、学校管理者，还是合作伙伴，我们都期待您的来信。
+                <span class="block text-sm">We look forward to hearing from you, whether you are a teacher, administrator, or potential partner.</span>
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                
+                <!-- 联系信息卡片 -->
+                <div class="lg:col-span-1 space-y-8 p-6 bg-primary rounded-xl text-white shadow-2xl">
+                    <h3 class="text-2xl font-bold border-b border-white/50 pb-2">我们的信息</h3>
+                    
+                    <div class="flex items-center space-x-4">
+                        <i class="fas fa-envelope text-3xl text-secondary"></i>
+                        <div>
+                            <p class="font-semibold text-gray-200">电子邮件 / Email</p>
+                            <a href="mailto:info@pacle.org" class="text-lg hover:text-secondary transition duration-150">info@pacle.org</a>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <i class="fas fa-phone-alt text-3xl text-secondary"></i>
+                        <div>
+                            <p class="font-semibold text-gray-200">电话 / Phone</p>
+                            <a href="tel:+15551234567" class="text-lg hover:text-secondary transition duration-150">(555) 123-4567</a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="font-semibold text-gray-200 flex items-center">
+                            <i class="fas fa-map-marker-alt text-xl text-secondary mr-2"></i> 所在地 / Location
+                        </p>
+                        <p class="text-lg">Pennsylvania, USA</p>
+                        <!-- 可以在这里嵌入地图（或使用占位图） -->
+                        <div class="w-full h-40 bg-gray-700 rounded-lg flex items-center justify-center mt-4 text-sm text-gray-400">
+                            [Image of Map Placeholder] 地图占位符
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 联系表单 -->
+                <div class="lg:col-span-2 p-6 bg-gray-50 rounded-xl shadow-xl">
+                    <h3 class="text-2xl font-bold text-primary mb-6">发送咨询 / Send Us a Message</h3>
+                    <form id="contact-form" class="space-y-6">
+                        <input type="text" placeholder="您的姓名 / Your Name" required
+                               class="w-full p-3 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary transition duration-150">
+                        <input type="email" placeholder="电子邮箱 / Email Address" required
+                               class="w-full p-3 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary transition duration-150">
+                        <input type="text" placeholder="主题 / Subject" required
+                               class="w-full p-3 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary transition duration-150">
+                        <textarea placeholder="您的消息 / Your Message" rows="5" required
+                                  class="w-full p-3 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary transition duration-150"></textarea>
+                        
+                        <button type="submit"
+                                class="w-full md:w-auto bg-primary hover:bg-blue-900 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">
+                            发送消息 / Send Message <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </form>
+                    <div id="contact-form-message" class="mt-4 text-green-600 font-semibold hidden">
+                        消息已发送！我们感谢您的来信，并会尽快回复。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 会员注册 (Membership Section) -->
-    <section id="membership" class="py-16 md:py-24 bg-white">
+    <section id="membership" class="py-16 md:py-24 bg-gray-100">
         <div class="container mx-auto px-4">
             <div class="bg-primary text-white rounded-3xl p-8 md:p-12 lg:p-16 shadow-2xl">
                 <div class="max-w-4xl mx-auto text-center">
@@ -217,7 +332,7 @@
                             提交注册意向 / Submit Registration <i class="fas fa-paper-plane ml-2"></i>
                         </button>
                     </form>
-                    <div id="form-message" class="mt-4 text-green-300 font-semibold hidden">
+                    <div id="membership-form-message" class="mt-4 text-green-300 font-semibold hidden">
                         感谢您的注册意向！我们会尽快与您联系。Thank you for your interest!
                     </div>
                 </div>
@@ -239,19 +354,18 @@
             <div>
                 <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-1">快速链接 / Links</h4>
                 <ul class="space-y-2 text-sm">
+                    <li><a href="#about" class="text-gray-400 hover:text-white transition duration-150">关于我们 / About Us</a></li>
                     <li><a href="#program" class="text-gray-400 hover:text-white transition duration-150">介绍项目 / Programs</a></li>
                     <li><a href="#news" class="text-gray-400 hover:text-white transition duration-150">最新新闻 / News</a></li>
-                    <li><a href="#membership" class="text-gray-400 hover:text-white transition duration-150">会员注册 / Membership</a></li>
+                    <li><a href="#contact" class="text-gray-400 hover:text-white transition duration-150">联系我们 / Contact Us</a></li>
                 </ul>
             </div>
 
-            <!-- 联系方式 -->
+            <!-- 联系方式 (Link to main contact section) -->
             <div>
                 <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-1">联系我们 / Contact</h4>
                 <p class="text-sm text-gray-400">
-                    <i class="fas fa-envelope mr-2"></i> info@pacle.org<br>
-                    <i class="fas fa-phone-alt mr-2"></i> (555) 123-4567<br>
-                    <i class="fas fa-map-marker-alt mr-2"></i> Pennsylvania, USA
+                    <a href="#contact" class="hover:text-white transition duration-150">通过表单或电邮联系我们</a>
                 </p>
             </div>
 
@@ -301,12 +415,12 @@
             });
         });
 
-        // Simple form submission handler (no backend required for prototype)
+        // Simple form submission handler for Membership (no backend required for prototype)
         document.getElementById('membership-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
             // Display success message
-            const message = document.getElementById('form-message');
+            const message = document.getElementById('membership-form-message');
             message.classList.remove('hidden');
             
             // Reset form fields
@@ -317,8 +431,26 @@
                 message.classList.add('hidden');
             }, 5000); 
 
-            // Prevent confusion, use custom message instead of alert
             console.log('Membership interest submitted successfully.');
+        });
+        
+        // Simple form submission handler for Contact (no backend required for prototype)
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Display success message
+            const message = document.getElementById('contact-form-message');
+            message.classList.remove('hidden');
+            
+            // Reset form fields
+            this.reset();
+            
+            // Hide message after a few seconds
+            setTimeout(() => {
+                message.classList.add('hidden');
+            }, 5000); 
+
+            console.log('Contact message submitted successfully.');
         });
     </script>
 
