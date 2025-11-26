@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新闻详情 - PACLE</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="bg-gray-50">
+
+<header id="navbar"></header>
+
+<main class="container mx-auto px-6 mt-10">
+    <button onclick="history.back()" class="flex items-center text-blue-700 hover:text-blue-900 mb-8">
+        <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i> 返回
+    </button>
+
+    <div id="news-detail"></div>
+</main>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/news-data.js"></script>
+<script src="assets/js/news.js"></script>
+
+<script>
+    loadNewsDetail();
+</script>
+
+</body>
+</html>
