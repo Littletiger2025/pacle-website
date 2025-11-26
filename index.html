@@ -3,152 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PACLE 宾州中文教育联盟</title>
+    <title>PACLE 宾州中文教育联盟 - 首页</title>
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Lucide Icons 修复后的版本（UMD） -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        body {
-            font-family: "Inter", sans-serif;
-            background: #f8f9fa;
-        }
-        #news-content p {
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-            text-align: justify;
-        }
-        .news-item-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-color: #0D9488;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<body class="text-gray-800">
+<body class="bg-gray-50 text-gray-800">
+    
+    <!-- 导航栏 -->
+    <header id="navbar"></header>
 
-<!-- Header -->
-<header class="bg-blue-900 text-white py-6 shadow-md">
-    <div class="container mx-auto px-6">
-        <h1 class="text-3xl font-bold">PACLE 宾州中文教育联盟</h1>
-        <p class="text-blue-200 mt-1">Pennsylvania Association of Chinese Language Educators</p>
-    </div>
-</header>
+    <!-- Hero Section -->
+    <section class="bg-blue-900 text-white py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl font-bold">宾州中文教育联盟（PACLE）</h1>
+            <p class="text-blue-200 mt-4 text-lg">
+                Pennsylvania Association of Chinese Language Educators
+            </p>
+        </div>
+    </section>
 
-<!-- 主内容区 -->
-<main class="container mx-auto px-6 mt-10">
+    <!-- 内容 -->
+    <main class="container mx-auto px-6 mt-12">
 
-    <!-- 新闻列表视图 -->
-    <section id="news-list-view">
         <h2 class="text-2xl font-bold mb-6 text-blue-800">最新新闻</h2>
+        <div id="news-preview" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
 
-        <div id="news-list-container"></div>
-    </section>
-
-    <!-- 新闻详情视图 -->
-    <section id="news-detail-view" class="hidden">
-        <button onclick="showNewsList()" class="mb-6 flex items-center text-blue-700 hover:text-blue-900">
-            <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i> 返回新闻列表
-        </button>
-
-        <div id="news-detail-content"></div>
-    </section>
-
-</main>
-
-<script>
-/***********************************************
- * 本地新闻 Mock 数据（无需 API 即可运行）
- ***********************************************/
-const MOCK_NEWS_DATA = [
-    { id: 101, title: "年度教师大会圆满落幕", date: "2024-11-20", summary: "数百位中文教师齐聚一堂，分享教学经验，提升专业能力。" },
-    { id: 102, title: "文化交流项目启动招募", date: "2024-11-15", summary: "旨在促进跨文化理解，欢迎对中华文化感兴趣的学生报名。" },
-    { id: 103, title: "理事会召开秋季会议", date: "2024-11-10", summary: "讨论了新学年预算及未来五年中文教育发展规划。" },
-    { id: 104, title: "沉浸式中文夏令营预告", date: "2024-11-05", summary: "结合语言学习与传统艺术体验，名额有限。" },
-    { id: 105, title: "线上教学资源库升级", date: "2024-10-30", summary: "新增百份高质量教材和教案，支持全州中文学校使用。" }
-];
-
-let allNews = MOCK_NEWS_DATA;
-
-/***********************************************
- * 生成新闻列表 HTML
- ***********************************************/
-function generateNewsListHtml(news) {
-    return news.map(item => `
-        <a href="#" 
-           onclick="showNewsDetail(${item.id}); return false;"
-           class="news-item-link block p-6 border border-gray-200 rounded-xl bg-white transition">
-            <div class="flex items-start mb-2">
-                <i data-lucide="newspaper" class="w-6 h-6 text-teal-600 mr-3"></i>
-                <h3 class="text-xl font-semibold text-gray-900">${item.title}</h3>
-            </div>
-            <p class="text-sm text-gray-500 mb-3 ml-9">${item.date}</p>
-            <p class="text-gray-700 ml-9">${item.summary}</p>
-        </a>
-    `).join("");
-}
-
-/***********************************************
- * 渲染新闻列表
- ***********************************************/
-function renderNewsList() {
-    const container = document.getElementById("news-list-container");
-    container.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            ${generateNewsListHtml(allNews)}
+        <div class="mt-10 text-center">
+            <a href="news.html"
+               class="px-6 py-3 inline-block bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition">
+                查看全部新闻
+            </a>
         </div>
-    `;
-    lucide.createIcons();
-}
+    </main>
 
-/***********************************************
- * 显示新闻详情
- ***********************************************/
-function showNewsDetail(id) {
-    const item = allNews.find(n => n.id === id);
-    if (!item) return;
-
-    document.getElementById("news-list-view").classList.add("hidden");
-    document.getElementById("news-detail-view").classList.remove("hidden");
-
-    const content = `
-        <h1 class="text-3xl font-extrabold text-blue-800 text-center mb-2">${item.title}</h1>
-        <p class="text-sm text-gray-500 text-center mb-8">${item.date} | 来源: PACLE 官网</p>
-        <div id="news-content" class="text-lg leading-relaxed text-gray-700 mx-auto max-w-4xl">
-            <p>${item.summary}</p>
-            <p>本次活动充分展示了宾州中文教育界的凝聚力与创新精神，是推动中文教育发展的重要里程碑。</p>
-            <p>PACLE 将继续为全州中文教师和学生提供更多资源、培训和交流机会，推动中文教育迈向更高的水平。</p>
-        </div>
-    `;
-
-    document.getElementById("news-detail-content").innerHTML = content;
-    lucide.createIcons();
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-/***********************************************
- * 返回新闻列表
- ***********************************************/
-function showNewsList() {
-    document.getElementById("news-detail-view").classList.add("hidden");
-    document.getElementById("news-list-view").classList.remove("hidden");
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-/***********************************************
- * 初始化页面
- ***********************************************/
-document.addEventListener("DOMContentLoaded", () => {
-    renderNewsList();
-    lucide.createIcons();
-});
-</script>
-
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/news-data.js"></script>
+    <script>
+        renderNewsPreview("news-preview", 4);
+        lucide.createIcons();
+    </script>
 </body>
 </html>
