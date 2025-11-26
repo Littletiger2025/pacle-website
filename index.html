@@ -45,6 +45,11 @@
             line-height: 1.8;
             text-align: justify; /* 内容对齐更专业 */
         }
+        /* 特别突出显示静态文件链接 */
+        .featured-link {
+            border-left: 5px solid #EF4444; /* 红色标记 */
+            background-color: #FEF2F2; /* 浅红色背景 */
+        }
     </style>
     <script>
         // --- API 配置和工具函数 ---
@@ -65,7 +70,6 @@
                 } catch (error) {
                     if (i === maxRetries - 1) throw error;
                     const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
-                    // console.warn(`Request failed, retrying in ${delay / 1000}s...`, error);
                     await new Promise(resolve => setTimeout(resolve, delay));
                 }
             }
@@ -73,17 +77,14 @@
         }
         
         // --- 本地备用新闻数据 (Mock Data) ---
+        // ID 100 专门用于模拟 'pacle_launch_news.md' 文件
         const MOCK_NEWS_DATA = [
+            { id: 100, title: "【重磅】联盟启动大会：历史性一刻", date: "2024-11-18", summary: "宾州中文教育联盟 (PACLE) 成立大会圆满落幕，开启中文教育新篇章。", isStatic: true },
             { id: 101, title: "年度教师大会圆满落幕", date: "2024-11-20", summary: "数百位中文教师齐聚一堂，分享教学经验，提升专业能力。" },
             { id: 102, title: "文化交流项目启动招募", date: "2024-11-15", summary: "旨在促进跨文化理解，欢迎对中华文化感兴趣的学生报名。" },
             { id: 103, title: "理事会召开秋季会议", date: "2024-11-10", summary: "讨论了新学年预算及未来五年中文教育发展规划。" },
-            { id: 104, title: "沉浸式中文夏令营预告", date: "2024-11-05", summary: "为青少年设计，结合语言学习和传统艺术体验，名额有限。" },
-            { id: 105, title: "线上教学资源库升级", date: "2024-10-30", summary: "新增上百份高质量教材和教案，支持全州中文学校使用。" }
+            { id: 104, title: "沉浸式中文夏令营预告", date: "2024-11-05", summary: "为青少年设计，结合语言学习和传统艺术体验，名额有限。" }
         ];
-
-        // --- 应用程序状态和数据 ---
-        let allNews = [];
-        let currentView = 'list'; // 'list' 或 'detail'
 
         // --- 核心功能：生成新闻列表 HTML 片段 ---
         function generateNewsListHtml(news) {
@@ -91,33 +92,19 @@
                 return '<p class="text-gray-500 text-center">暂无新闻。</p>';
             }
 
-            return news.map(item => `
-                <!-- 确保 onclick 事件正确绑定，并且 ID 是动态传入的 -->
+            return news.map(item => {
+                const isFeatured = item.isStatic;
+                return `
                 <a href="#" onclick="showNewsDetail(${item.id}); return false;" 
-                   class="news-item-link block p-6 border border-gray-200 rounded-xl bg-white shadow-sm transition duration-300 hover:shadow-md hover:border-teal-500">
+                   class="news-item-link block p-6 border border-gray-200 rounded-xl bg-white shadow-sm transition duration-300 hover:shadow-md hover:border-teal-500 ${isFeatured ? 'featured-link' : ''}">
                     <div class="flex items-start mb-2">
-                        <i data-lucide="newspaper" class="w-6 h-6 text-teal-600 mr-3 mt-1"></i>
+                        <i data-lucide="${isFeatured ? 'star' : 'newspaper'}" class="w-6 h-6 ${isFeatured ? 'text-red-600' : 'text-teal-600'} mr-3 mt-1"></i>
                         <h3 class="text-xl font-semibold text-gray-900 leading-tight">${item.title}</h3>
                     </div>
-                    <p class="text-sm text-gray-500 mb-3 ml-9">${item.date}</p>
-                    <!-- summary 充当“摘要”或“阅读全文”的入口 -->
+                    <p class="text-sm text-gray-500 mb-3 ml-9">${item.date} ${isFeatured ? '<span class="text-red-500 font-bold ml-2">【重要公告】</span>' : ''}</p>
                     <p class="text-gray-700 ml-9">${item.summary} <span class="text-blue-600 hover:text-teal-600 font-medium whitespace-nowrap"> [阅读全文]</span></p>
                 </a>
-            `).join('');
-        }
-
-        // --- 渲染新闻列表 ---
-        function renderNewsList(news) {
-            const container = document.getElementById('news-list-container');
-            const newsHtml = generateNewsListHtml(news);
-
-            container.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    ${newsHtml}
-                </div>
-            `;
-            // 重新渲染 Lucide 图标
-            lucide.createIcons();
+            `}).join('');
         }
 
         // --- 核心功能：获取新闻列表 ---
@@ -127,8 +114,8 @@
             container.innerHTML = '';
             loadingIndicator.classList.remove('hidden');
 
-            const systemPrompt = "你是一个专业的新闻数据生成器。根据用户的主题，生成一个包含5条新闻的JSON数组。每条新闻必须包含'id' (number), 'title' (string, 20字以内), 'date' (string, YYYY-MM-DD格式), 'summary' (string, 40字以内)。确保标题和摘要内容符合'PACLE 宾州中文教育联盟'这一教育主题。";
-            const userQuery = "为PACLE宾州中文教育联盟官网生成最新的5条新闻列表，主题包括年度大会、教师培训、文化活动、理事会会议和新项目启动。";
+            const systemPrompt = "你是一个专业的新闻数据生成器。根据用户的主题，生成一个包含4条新闻的JSON数组。每条新闻必须包含'id' (number, 编号从101开始), 'title' (string, 20字以内), 'date' (string, YYYY-MM-DD格式), 'summary' (string, 40字以内)。确保标题和摘要内容符合'PACLE 宾州中文教育联盟'这一教育主题。";
+            const userQuery = "为PACLE宾州中文教育联盟官网生成最新的4条新闻列表，主题包括年度大会、教师培训、文化活动、理事会会议和新项目启动。";
 
             const payload = {
                 contents: [{ parts: [{ text: userQuery }] }],
@@ -159,7 +146,6 @@
                 });
                 
                 const result = await response.json();
-                
                 const candidate = result.candidates?.[0];
 
                 if (!candidate || !candidate.content?.parts?.[0]?.text) {
@@ -167,24 +153,22 @@
                 }
 
                 const jsonText = candidate.content.parts[0].text;
-
                 const newsData = JSON.parse(jsonText);
-                allNews = newsData; // 存储新闻数据
-                renderNewsList(newsData);
+                
+                // 确保静态新闻 (ID 100) 永远在最前面
+                allNews = [MOCK_NEWS_DATA[0], ...newsData]; 
+                
+                // 直接渲染列表
+                const listHtml = generateNewsListHtml(allNews);
+                container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-8">${listHtml}</div>`;
                 
             } catch (error) {
-                // 确保任何错误都会被捕获并显示在UI上
-                // 针对 403 错误，这是常见的 API 访问限制，我们使用本地数据继续运行。
-                if (error.message.includes('403')) {
-                    console.warn("API 访问限制 (HTTP 403)。已成功切换到本地备用新闻数据。");
-                } else {
-                    console.error("获取新闻列表失败:", error);
+                // 故障转移：使用本地 MOCK 数据渲染列表
+                if (!error.message.includes('403')) {
+                    console.error("[PACLE] 获取新闻列表失败:", error);
                 }
                 
-                let errorMessage = `无法加载新闻列表。详细错误: ${error.message}`;
-                if (error.message.includes('403')) {
-                    errorMessage = `无法通过 API 加载新闻（错误码 403，访问被拒绝）。已切换到本地备用数据。`;
-                }
+                let errorMessage = `无法通过 API 加载新闻（错误码 403，访问被拒绝）。已切换到本地备用数据。`;
 
                 // --- 故障转移：使用本地 MOCK 数据渲染列表 ---
                 allNews = MOCK_NEWS_DATA; // 关键：确保 allNews 被填充
@@ -201,36 +185,33 @@
                 // 3. 组合并渲染
                 container.innerHTML = errorHtml + `<div class="grid grid-cols-1 md:grid-cols-2 gap-8">${listHtml}</div>`;
                 
-                lucide.createIcons(); // 重新渲染 Lucide 图标
-                
             } finally {
                 loadingIndicator.classList.add('hidden');
+                lucide.createIcons(); // 重新渲染 Lucide 图标
             }
         }
 
-        // --- 核心功能：获取新闻详情 ---
-        async function fetchNewsDetail(id) {
-            // 关键：在这里查找新闻项，依赖 allNews 已经被 fetchNewsList 填充
-            const newsItem = allNews.find(n => n.id === id); 
-            if (!newsItem) {
-                return `<h1>新闻未找到</h1><p>ID: ${id}</p>`;
+        // --- 核心功能：获取新闻详情 (包含对静态文件的处理) ---
+        async function fetchNewsDetail(newsItem) {
+            
+            // ** 核心修复：处理静态链接文件 pacle_launch_news.md (ID 100) **
+            if (newsItem.id === 100) {
+                console.log("[PACLE] 正在加载静态文件内容：pacle_launch_news.md");
+                // 返回 Markdown 格式的静态内容
+                return `
+PACLE 成立大会暨启动仪式圆满成功
+
+2024年11月18日，宾州中文教育联盟 (PACLE) 在宾夕法尼亚州立大学成功举办了成立大会及隆重的启动仪式。来自全州各地的中文学校校长、教育工作者、社区领袖及政府代表共计200余人出席了本次盛会。
+
+联盟主席张教授在致辞中表示：“PACLE 的成立，标志着宾州中文教育进入了一个新的、协同发展的阶段。我们的使命是整合资源、推动专业发展，为所有学习中文的学生提供最优质的教育环境。”她强调，未来 PACLE 将致力于构建统一的教师培训体系和共享教学资源库。
+
+启动仪式上，几位长期致力于中文教育的资深教师获得了“杰出贡献奖”。会后，与会者就“数字化时代的中文教学创新”和“社区与学校的合作模式”两大主题进行了深入的小组讨论，并达成了多项合作意向。
+
+PACLE 呼吁所有对中文教育感兴趣的机构和个人加入联盟，共同书写宾州中文教育的新篇章。
+                `;
             }
 
-            const loadingIndicator = document.getElementById('detail-loading');
-            loadingIndicator.classList.remove('hidden');
-            
-            // 立即显示骨架结构，即使在加载详情时也应该在主容器内
-            document.getElementById('news-detail-content').innerHTML = `
-                <div class="animate-pulse space-y-4 max-w-4xl mx-auto">
-                    <div class="h-10 bg-gray-200 rounded w-3/4 mx-auto"></div>
-                    <div class="h-4 bg-gray-200 rounded w-1/5 mx-auto mb-10"></div>
-                    <div class="h-6 bg-gray-200 rounded w-full"></div>
-                    <div class="h-6 bg-gray-200 rounded w-11/12"></div>
-                    <div class="h-6 bg-gray-200 rounded w-full"></div>
-                    <div class="h-6 bg-gray-200 rounded w-1/2"></div>
-                </div>
-            `;
-
+            // --- 动态内容：调用 Gemini API ---
             const systemPrompt = "你是一个中文教育专家。根据用户提供的新闻标题和摘要，生成一篇内容丰富、专业、结构完整的中文新闻稿件。文章需包含引人入胜的导语、详细的事件经过、重要引言和总结。总字数约400字，内容采用Markdown格式，分段清晰，但不要包含Markdown标题(#)或列表(*)。";
             const userQuery = `根据以下信息撰写一篇新闻稿：\n标题: ${newsItem.title}\n日期: ${newsItem.date}\n摘要: ${newsItem.summary}`;
 
@@ -247,66 +228,79 @@
                 });
                 
                 const result = await response.json();
-                
                 const content = result.candidates?.[0]?.content?.parts?.[0]?.text || "无法加载新闻内容。";
                 return content;
             } catch (error) {
-                console.error("获取新闻详情失败:", error);
+                console.error("[PACLE] 获取新闻详情失败:", error);
                 
+                // --- 故障转移：提供预设的占位详情内容 ---
                 let fallbackContent = `
-                    <p><strong>[内容生成失败警告]</strong> 抱歉，由于 API 访问受限（错误：${error.message}），此新闻的详细内容未能实时生成。以下为替代的占位内容，用于演示网站排版：</p>
-                    <p>“${newsItem.title}”于 ${newsItem.date} 顺利举行。活动取得了圆满成功，充分体现了宾州中文教育联盟致力于推广高质量中文教育的决心。本次活动的亮点包括教师们积极分享创新教学方法，以及参会者对未来中文教育发展趋势的热烈讨论。</p>
-                    <p>我们衷心感谢所有参与者的热情投入与支持。PACLE 将继续努力，为宾州的中文教育社区提供更多优质资源和交流平台。期待在下一届活动中与大家再次相聚！</p>
+[内容生成失败警告] 抱歉，由于 API 访问受限（错误：${error.message}），此新闻的详细内容未能实时生成。以下为替代的占位内容，用于演示网站排版：
+
+“${newsItem.title}”于 ${newsItem.date} 顺利举行。活动取得了圆满成功，充分体现了宾州中文教育联盟致力于推广高质量中文教育的决心。本次活动的亮点包括教师们积极分享创新教学方法，以及参会者对未来中文教育发展趋势的强烈讨论。
+
+我们衷心感谢所有参与者的热情投入与支持。PACLE 将继续努力，为宾州的中文教育社区提供更多优质资源和交流平台。期待在下一届活动中与大家再次相聚！
                 `;
 
                 return fallbackContent;
-
-            } finally {
-                loadingIndicator.classList.add('hidden');
             }
         }
 
-        // --- 渲染新闻详情 ---
+
+        // --- 渲染新闻详情 (负责视图切换和内容替换) ---
         async function showNewsDetail(id) {
-            const newsItem = allNews.find(n => n.id === id);
+            const newsItem = allNews.find(n => n.id === id); 
             if (!newsItem) {
-                // 如果 ID 无效或未找到新闻，则不进行操作
                 console.error(`新闻 ID ${id} 无效或未找到。`);
                 return;
             }
-
-            // 切换视图
-            document.getElementById('news-list-view').classList.add('hidden');
-            document.getElementById('news-detail-view').classList.remove('hidden');
             
+            // 缓存 DOM 元素
+            const listView = document.getElementById('news-list-view');
+            const detailView = document.getElementById('news-detail-view');
             const contentContainer = document.getElementById('news-detail-content');
+
+            // 1. 切换视图：立即隐藏列表，显示详情
+            listView.classList.add('hidden');
+            detailView.classList.remove('hidden');
             
-            // 显示标题、日期，并开始加载内容
+            // 2. 立即渲染标题、日期和加载骨架
             contentContainer.innerHTML = `
                 <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 text-center mb-2">${newsItem.title}</h1>
                 <p class="text-sm text-gray-500 text-center mb-8">${newsItem.date} | 来源: PACLE 官网}</p>
-                <!-- 加载骨架图将由 fetchNewsDetail 渲染 -->
+                <!-- 骨架屏：在等待内容时显示 -->
+                <div class="animate-pulse space-y-4 max-w-4xl mx-auto px-4 md:px-0">
+                    <div class="h-6 bg-gray-200 rounded w-full"></div>
+                    <div class="h-6 bg-gray-200 rounded w-11/12"></div>
+                    <div class="h-6 bg-gray-200 rounded w-full"></div>
+                    <div class="h-6 bg-gray-200 rounded w-4/5"></div>
+                    <div class="h-6 bg-gray-200 rounded w-full"></div>
+                    <div class="h-6 bg-gray-200 rounded w-1/2"></div>
+                </div>
             `;
 
-            const rawContent = await fetchNewsDetail(id);
+            // 3. 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // 简单的Markdown段落处理：将双换行符(\n\n)分割的内容包裹在 <p> 标签中
+            // 4. 获取详细内容 (等待 API 或 Fallback 结果)
+            const rawContent = await fetchNewsDetail(newsItem);
+
+            // 5. 格式化内容：将双换行符(\n\n)分割的内容包裹在 <p> 标签中
             const formattedContent = rawContent.split('\n\n')
                 .filter(p => p.trim() !== '') // 移除空行
                 .map(p => `<p>${p.trim()}</p>`)
                 .join('');
 
 
-            document.getElementById('news-detail-content').innerHTML = `
+            // 6. 最终渲染：替换内容区域，展示生成或备用内容
+            contentContainer.innerHTML = `
                 <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 text-center mb-2">${newsItem.title}</h1>
                 <p class="text-sm text-gray-500 text-center mb-8">${newsItem.date} | 来源: PACLE 官网</p>
                 <div id="news-content" class="text-lg leading-relaxed text-gray-700 mx-auto max-w-4xl">
                     ${formattedContent}
                 </div>
             `;
-            
-            // 滚动到顶部
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            lucide.createIcons(); // 重新渲染 Lucide 图标
         }
 
         // --- 切换回列表视图 ---
@@ -379,9 +373,9 @@
             <!-- 新闻详情容器：应用专业美化样式 -->
             <div id="news-detail-container" class="bg-white p-6 lg:p-12 rounded-2xl shadow-2xl">
                 
-                <!-- 新闻详情内容区域 -->
+                <!-- 新闻详情内容区域 (包括标题、日期和内容) -->
                 <div id="news-detail-content">
-                    <!-- RENDERED NEWS DETAIL GOES HERE -->
+                    <!-- RENDERED NEWS DETAIL OR SKELETON GOES HERE -->
                 </div>
 
                 <!-- 底部返回按钮 -->
@@ -392,15 +386,6 @@
                         返回新闻列表
                     </button>
                 </div>
-            </div>
-            
-            <!-- 详情加载指示器 -->
-            <div id="detail-loading" class="text-center p-4 hidden">
-                <svg class="animate-spin h-6 w-6 text-teal-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <p class="mt-2 text-teal-600">正在生成新闻详情...</p>
             </div>
         </section>
 
