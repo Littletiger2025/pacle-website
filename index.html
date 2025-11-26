@@ -77,7 +77,7 @@
         }
         
         // --- 本地备用新闻数据 (Mock Data) ---
-        // ID 100 专门用于模拟 'pacle_launch_news.md' 文件
+        // ID 100 专门用于模拟 'pacle_launch_news.md' 文件 (新闻卡片 1)
         const MOCK_NEWS_DATA = [
             { id: 100, title: "【重磅】联盟启动大会：历史性一刻", date: "2024-11-18", summary: "宾州中文教育联盟 (PACLE) 成立大会圆满落幕，开启中文教育新篇章。", isStatic: true },
             { id: 101, title: "年度教师大会圆满落幕", date: "2024-11-20", summary: "数百位中文教师齐聚一堂，分享教学经验，提升专业能力。" },
@@ -156,6 +156,7 @@
                 const newsData = JSON.parse(jsonText);
                 
                 // 确保静态新闻 (ID 100) 永远在最前面
+                // MOCK_NEWS_DATA[0] 对应 pacle_launch_news.md
                 allNews = [MOCK_NEWS_DATA[0], ...newsData]; 
                 
                 // 直接渲染列表
@@ -194,7 +195,7 @@
         // --- 核心功能：获取新闻详情 (包含对静态文件的处理) ---
         async function fetchNewsDetail(newsItem) {
             
-            // ** 核心修复：处理静态链接文件 pacle_launch_news.md (ID 100) **
+            // ** 核心逻辑：处理静态链接文件 pacle_launch_news.md (ID 100) **
             if (newsItem.id === 100) {
                 console.log("[PACLE] 正在加载静态文件内容：pacle_launch_news.md");
                 // 返回 Markdown 格式的静态内容
